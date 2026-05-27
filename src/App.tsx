@@ -40,7 +40,12 @@ const HishabProAppContent: React.FC = () => {
     setCurrentUser, 
     activeBranch, 
     settings, 
-    staff 
+    staff,
+    firebaseUser,
+    isFirebaseLoading,
+    isFirebaseConnected,
+    loginWithGoogle,
+    logoutFirebase
   } = useShop();
 
   const t = translations[lang];
@@ -127,6 +132,64 @@ const HishabProAppContent: React.FC = () => {
             );
           })}
         </nav>
+
+        {/* Firebase Cloud Sync Control panel */}
+        <div className="p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/20 dark:bg-slate-855/10">
+          <div className="rounded-2xl border border-slate-150 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 shadow-sm select-none">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                Cloud Sync (Firebase)
+              </span>
+              <span className={`inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-bold ${
+                isFirebaseConnected 
+                  ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-500'
+              }`}>
+                {isFirebaseConnected ? '● Online' : '○ Offline'}
+              </span>
+            </div>
+
+            {isFirebaseConnected && firebaseUser ? (
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-950 flex items-center justify-center font-black text-[9px] text-emerald-700 select-none">
+                    ☁️
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[10px] font-extrabold truncate text-slate-700 dark:text-slate-350">
+                      {firebaseUser.email}
+                    </p>
+                    <p className="text-[8px] text-slate-400">
+                      Synced in real-time
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  id="firebase-signout"
+                  onClick={logoutFirebase}
+                  className="w-full py-1.5 px-2.5 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/20 dark:hover:bg-rose-900/30 text-rose-600 dark:text-rose-400 border border-transparent rounded-xl text-[10px] font-black cursor-pointer transition-colors text-center"
+                >
+                  Disconnect Synchronization
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <p className="text-[10px] leading-relaxed text-slate-500 dark:text-slate-400 font-medium">
+                  Connect using Google to automatically save inventory and transactions on the cloud in real-time.
+                </p>
+                <button
+                  type="button"
+                  id="firebase-signin"
+                  onClick={loginWithGoogle}
+                  className="w-full py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-[10px] font-black cursor-pointer transition-colors flex items-center justify-center gap-2 shadow-sm shadow-emerald-600/10"
+                >
+                  <span>🔑</span> Sign In with Google
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
 
         {/* Active Cashier Identity Footer */}
         <div className="p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-850/20 relative">
@@ -219,6 +282,50 @@ const HishabProAppContent: React.FC = () => {
       {/* Mobile expandable Drawer menu */}
       {isMobileMenuOpen && (
         <div className="md:hidden bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-11 p-4 flex flex-col gap-2 shadow-lg animate-slide-down">
+          
+          {/* Mobile Firebase Sync controller */}
+          <div className="rounded-xl border border-slate-150 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-850 p-3 mb-2">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[10px] font-black uppercase tracking-wider text-slate-450 dark:text-slate-400">
+                Cloud Sync (Firebase)
+              </span>
+              <span className={`inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-bold ${
+                isFirebaseConnected 
+                  ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-500'
+              }`}>
+                {isFirebaseConnected ? 'Online' : 'Offline'}
+              </span>
+            </div>
+
+            {isFirebaseConnected && firebaseUser ? (
+              <div className="flex items-center justify-between gap-2">
+                <div className="min-w-0 flex-1">
+                  <p className="text-[10px] font-extrabold truncate text-slate-700 dark:text-slate-350">
+                    {firebaseUser.email}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  id="mobile-firebase-signout"
+                  onClick={logoutFirebase}
+                  className="py-1 px-2.5 bg-rose-50 dark:bg-rose-950/20 text-rose-600 dark:text-rose-450 rounded-lg text-[9px] font-black cursor-pointer"
+                >
+                  Disconnect
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                id="mobile-firebase-signin"
+                onClick={loginWithGoogle}
+                className="w-full py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[10px] font-black cursor-pointer flex items-center justify-center gap-2"
+              >
+                🔑 Sign In with Google
+              </button>
+            )}
+          </div>
+
           {navItems.map(item => {
             const Icon = item.icon;
             const isActive = currentTab === item.id;

@@ -24,9 +24,12 @@ export const SettingsView: React.FC = () => {
     settings, 
     updateSettings, 
     backupData, 
-    restoreData 
+    restoreData,
+    startOver
   } = useShop();
   const t = translations[lang];
+
+  const [isConfirmingStartOver, setIsConfirmingStartOver] = useState(false);
 
   // Forms editable states
   const [shopNameEn, setShopNameEn] = useState(settings.shopNameEn);
@@ -92,6 +95,26 @@ export const SettingsView: React.FC = () => {
       setActiveBranchState(curSettings.activeBranch);
     }
     alert(t.restoreSuccess);
+  };
+
+  const handleStartOver = async () => {
+    if (!isConfirmingStartOver) {
+      setIsConfirmingStartOver(true);
+      return;
+    }
+    await startOver();
+    setIsConfirmingStartOver(false);
+    
+    // Wipe form fields to match INITIAL_SETTINGS
+    setShopNameEn("My Retail Shop");
+    setShopNameBn("আমার রিটেল শপ");
+    setAddressEn("Dhaka, Bangladesh");
+    setAddressBn("ঢাকা, বাংলাদেশ");
+    setPhone("01700000000");
+    setVatRate("0");
+    setActiveBranchState("Main Outlet Branch");
+    
+    alert(lang === 'en' ? "Application reset complete! Restarting clean." : "অ্যাপ্লিকেশন সম্পূর্ণ রিসেট সম্পন্ন হয়েছে!");
   };
 
   return (
@@ -224,6 +247,48 @@ export const SettingsView: React.FC = () => {
               </button>
             </div>
           </div>
+
+          {/* Danger Zone Start Over */}
+          <div className="bg-white dark:bg-slate-900 border border-rose-100 dark:border-rose-955/20 rounded-3xl p-5 shadow-sm space-y-4">
+            <h4 className="text-xs font-black uppercase tracking-widest text-rose-500 flex items-center gap-2">
+              <span>🚨</span>
+              {lang === 'en' ? 'Danger Zone / System Control' : 'ডেঞ্জার জোন / নিয়ন্ত্রণ প্যানেল'}
+            </h4>
+            <p className="text-xs text-slate-400">
+              {lang === 'en' 
+                ? 'Wipe out all created products, sales transactions, expense lists, and custom profiles to start completely fresh.'
+                : 'সব তৈরি করা প্রোডাক্ট, কাস্টমার, বিক্রয়ের তথ্য এবং খরচের খাতা মুছে সম্পূর্ণ নতুন একটি ডেটাবেজ দিয়ে শুরু করুন।'}
+            </p>
+
+            <div className="space-y-2">
+              <button
+                type="button"
+                id="startover-reset-btn"
+                onClick={handleStartOver}
+                className={`w-full py-3 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-1.5 cursor-pointer transition-all ${
+                  isConfirmingStartOver 
+                    ? 'bg-rose-600 hover:bg-rose-700 text-white shadow-sm ring-2 ring-rose-600/50' 
+                    : 'bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/20 dark:hover:bg-rose-900/30 text-rose-600 dark:text-rose-455 border border-rose-200 dark:border-rose-905/40'
+                }`}
+              >
+                <span>♻️</span>
+                {isConfirmingStartOver 
+                  ? (lang === 'en' ? '⚠️ CLICK AGAIN TO WIPE ALL DATA!' : '⚠️ সব মুছে দিতে পুনরায় ক্লিক করুন!')
+                  : (lang === 'en' ? 'Start Over / Reset Application' : 'সব রিসেট করুন / নতুন করে শুরু করুন')}
+              </button>
+              {isConfirmingStartOver && (
+                <button
+                  type="button"
+                  id="cancel-reset-btn"
+                  className="w-full text-center text-[10px] text-slate-400 font-medium underline block cursor-pointer py-1"
+                  onClick={() => setIsConfirmingStartOver(false)}
+                >
+                  {lang === 'en' ? 'Cancel' : 'বাতিল করুন'}
+                </button>
+              )}
+            </div>
+          </div>
+
         </div>
 
         {/* 2. Shop Configuration Form Settings (Right) */}
