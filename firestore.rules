@@ -1,0 +1,56 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Global Catch-all Deny Security Gate
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isEmailVerified() {
+      return isSignedIn() && (request.auth.token.email_verified == true || request.auth.token.firebase.sign_in_provider == 'google.com');
+    }
+
+    // Main Shop collection
+    match /shops/{shopId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn();
+
+      // Sub-collections validation
+      match /products/{productId} {
+        allow read: if isSignedIn();
+        allow write: if isSignedIn();
+      }
+
+      match /customers/{customerId} {
+        allow read: if isSignedIn();
+        allow write: if isSignedIn();
+      }
+
+      match /sales/{saleId} {
+        allow read: if isSignedIn();
+        allow write: if isSignedIn();
+      }
+
+      match /expenses/{expenseId} {
+        allow read: if isSignedIn();
+        allow write: if isSignedIn();
+      }
+
+      match /staff/{staffId} {
+        allow read: if isSignedIn();
+        allow write: if isSignedIn();
+      }
+
+      match /settings/{settingsDoc} {
+        allow read: if isSignedIn();
+        allow write: if isSignedIn();
+      }
+    }
+  }
+}

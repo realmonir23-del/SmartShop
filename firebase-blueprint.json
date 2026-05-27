@@ -1,0 +1,131 @@
+{
+  "entities": {
+    "Product": {
+      "title": "Product Entity",
+      "description": "Information about a stockable retail item/product.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "nameEn": { "type": "string" },
+        "nameBn": { "type": "string" },
+        "code": { "type": "string" },
+        "categoryEn": { "type": "string" },
+        "categoryBn": { "type": "string" },
+        "purchasePrice": { "type": "number" },
+        "sellingPrice": { "type": "number" },
+        "stock": { "type": "number" },
+        "alertLimit": { "type": "number" },
+        "image": { "type": "string" }
+      },
+      "required": ["id", "nameEn", "nameBn", "code", "purchasePrice", "sellingPrice", "stock"]
+    },
+    "Customer": {
+      "title": "Customer Profile",
+      "description": "Customer demographic details, credit/due records, loyalty points.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "phone": { "type": "string" },
+        "dueAmount": { "type": "number" },
+        "loyaltyPoints": { "type": "number" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "name", "phone", "dueAmount", "loyaltyPoints", "createdAt"]
+    },
+    "Sale": {
+      "title": "POS Transaction Record",
+      "description": "Details of POS invoices, subtotal aggregates, payment channels, cashier references.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "receiptNo": { "type": "string" },
+        "date": { "type": "string" },
+        "subTotal": { "type": "number" },
+        "discount": { "type": "number" },
+        "vat": { "type": "number" },
+        "total": { "type": "number" },
+        "paymentMethod": { "type": "string" },
+        "paidAmount": { "type": "number" },
+        "dueAmount": { "type": "number" },
+        "customerId": { "type": "string" },
+        "customerName": { "type": "string" },
+        "cashierId": { "type": "string" },
+        "cashierName": { "type": "string" },
+        "branchId": { "type": "string" }
+      },
+      "required": ["id", "receiptNo", "date", "subTotal", "total", "paymentMethod", "paidAmount"]
+    },
+    "Expense": {
+      "title": "Expense Voucher",
+      "description": "Outflow transaction logging.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "categoryEn": { "type": "string" },
+        "categoryBn": { "type": "string" },
+        "amount": { "type": "number" },
+        "date": { "type": "string" },
+        "description": { "type": "string" }
+      },
+      "required": ["id", "title", "amount", "date"]
+    },
+    "Staff": {
+      "title": "Staff Account",
+      "description": "Permissions role-based account, checkins, sales contributions.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "role": { "type": "string" },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "salesPerformance": { "type": "number" }
+      },
+      "required": ["id", "name", "role", "email"]
+    },
+    "ShopSettings": {
+      "title": "Shop Parameters",
+      "description": "Global settings parameters, branches directories.",
+      "type": "object",
+      "properties": {
+        "shopNameEn": { "type": "string" },
+        "shopNameBn": { "type": "string" },
+        "addressEn": { "type": "string" },
+        "addressBn": { "type": "string" },
+        "phone": { "type": "string" },
+        "vatRate": { "type": "number" },
+        "currency": { "type": "string" },
+        "activeBranch": { "type": "string" }
+      },
+      "required": ["shopNameEn", "shopNameBn", "phone"]
+    }
+  },
+  "firestore": {
+    "/shops/{shopId}/products/{productId}": {
+      "schema": "Product",
+      "description": "Bilingual retail products list."
+    },
+    "/shops/{shopId}/customers/{customerId}": {
+      "schema": "Customer",
+      "description": "Customer directories, points, dues register."
+    },
+    "/shops/{shopId}/sales/{saleId}": {
+      "schema": "Sale",
+      "description": "Invoiced POS sales, cash registers."
+    },
+    "/shops/{shopId}/expenses/{expenseId}": {
+      "schema": "Expense",
+      "description": "Business expenses entries."
+    },
+    "/shops/{shopId}/staff/{staffId}": {
+      "schema": "Staff",
+      "description": "Shop staff accounts registry."
+    },
+    "/shops/{shopId}/settings/global": {
+      "schema": "ShopSettings",
+      "description": "Shop profile and parameters."
+    }
+  }
+}

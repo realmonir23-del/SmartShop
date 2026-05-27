@@ -1,0 +1,6 @@
+{
+  "name": "SmartShop",
+  "description": "A modern mobile-first Shop Management SaaS for small Bangladeshi shops, supporting English, Bangla, POS, inventory, accounting and analytics.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
